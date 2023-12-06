@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="likesDAO">
+	
+	<insert id="addLikes" parameterType="likes">
+	INSERT INTO LIKES
+	(MEMBERID, VIDEOIDX, LIKES)
+	VALUES (#{memberId}, #{videoIdx}, 1)
+	</insert>
+
+	<select id="checkNumberOfLikesOnVideo" parameterType="int" resultType="int">
+	SELECT NVL(SUM(LIKES), 0)
+	FROM LIKES
+	WHERE VIDEOIDX = #{videoIdx}
+	</select>
+	
+	<select id="checkLikesStatusOfMember" parameterType="likes" resultType="int">
+	SELECT LIKES 
+	FROM LIKES
+	WHERE MEMBERID = #{memberId}
+	AND VIDEOIDX = #{videoIdx}
+	</select>	
+	
+	<update id="updateLikesStatusOfMember" parameterType="likes">
+	UPDATE LIKES
+	SET LIKES = CASE
+    WHEN LIKES = 1 THEN 0
+    WHEN LIKES = 0 THEN 1
+    ELSE LIKES
+    END
+	WHERE MEMBERID = #{memberId}
+	AND VIDEOIDX = #{videoIdx}
+	</update> 
+	
+</mapper>

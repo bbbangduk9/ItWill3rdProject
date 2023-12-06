@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="qnaDAO">
+	
+	<select id="getSearchedQnaList_T" parameterType="qna" resultType="qna">
+	    SELECT * FROM QNA 
+	    WHERE
+	    QTITLE LIKE '%'||#{searchKeyword}||'%' 
+	    ORDER BY SEQ DESC
+	</select>
+	
+	<select id="getSearchedQnaList_C" parameterType="qna" resultType="qna">
+	    SELECT * FROM QNA 
+	    WHERE 
+	    CONTENT LIKE '%'||#{searchKeyword}||'%'
+	    ORDER BY SEQ DESC
+	</select>
+	
+	<select id="getTotalRecordCount" parameterType="string" resultType="int">
+	    SELECT COUNT(*) FROM QNA
+	     <where>
+        <if test="searchCondition == 'QTITLE'">
+            QTITLE LIKE '%'||#{searchKeyword}||'%'
+        </if>
+        <if test="searchCondition == 'CONTENT'">
+            CONTENT LIKE '%'||#{searchKeyword}||'%'
+        </if>
+    </where>
+	</select>
+	
+	<select id="getPagedQnaList" parameterType="map" resultType="qna">
+    SELECT * FROM
+    (
+        SELECT ROWNUM RNUM, T.* FROM
+        (
+            SELECT * FROM QNA
+             <where>
+                <if test="searchCondition == 'QTITLE'">
+                    QTITLE LIKE '%'||#{searchKeyword}||'%'
+                </if>
+                <if test="searchCondition == 'CONTENT'">
+                    CONTENT LIKE '%'||#{searchKeyword}||'%'
+                </if>
+            </where>
+            ORDER BY SEQ DESC
+        ) T
+        
+    ) 
+    WHERE RNUM BETWEEN #{begin} AND #{end}
+	</select>
+	
+	<select id="getQna" parameterType="qna" resultType="qna">
+	SELECT *
+	FROM QNA
+	WHERE SEQ = #{seq}
+	</select>
+
+	<insert id="insertQna" parameterType="qna">
+		INSERT INTO QNA (SEQ, QTITLE, MEMBERID, CONTENT, SECRET)
+		VALUES ((SELECT NVL(MAX(SEQ),0) + 1 FROM QNA), #{qtitle}, #{memberId}, #{content}, #{secret})
+	</insert>
+	
+	<update id="updateQna" parameterType="qna">
+		UPDATE QNA 
+		SET QTITLE = #{qtitle},
+			CONTENT = #{content}
+	    WHERE SEQ = #{seq}
+	</update>
+	
+	<update id="increaseCnt" parameterType="qna">
+	   UPDATE QNA 
+	   SET CNT = CNT + 1
+	   WHERE SEQ = #{seq}
+	</update>
+	
+	
+	<delete id="deleteQna" parameterType="qna">
+		DELETE FROM QNA WHERE SEQ = #{seq}
+	</delete>
+	
+	
+</mapper>

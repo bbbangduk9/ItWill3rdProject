@@ -1,0 +1,32 @@
+.one h1 {
+  text-align: center;
+  text-transform: uppercase;
+  padding-bottom: 5px;
+}
+
+.container{
+	display : inline-block;
+	background-color: white;
+	padding: 10px;
+	box-shadow: -3px -3px 7px #ffffff,
+               3px 3px 5px #ceced1;
+	width: 800px;
+	height: 400px;
+	margin: auto;
+	text-align: center;
+	background-color: LightYellow;
+}
+
+.login_btn{
+    display: inline-block;
+    font-size: 14px;
+    line-height: 17px;
+    text-decoration: none;
+    color: #888;
+}
+.centerdiv{
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	position: absolute;
+}

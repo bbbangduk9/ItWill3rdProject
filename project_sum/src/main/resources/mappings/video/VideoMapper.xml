@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="videoDAO"> 
+	
+	<!-- (내 채널) 내 동영상 목록 최신순 가져옴 -->
+	<select id="getMyVideoList" parameterType="member" resultType="video">
+		SELECT * FROM VIDEO 
+		 WHERE MEMBERID = #{memberId}
+		 ORDER BY VREGDATE DESC
+	</select>
+	
+	<!-- (내 채널) 내 동영상 갯수 가져옴 -->
+	<select id="getTotalCount" parameterType="member" resultType="int">
+		SELECT COUNT (*)
+		  FROM VIDEO
+		 WHERE MEMBERID = #{memberId}
+	</select>
+	<!-- ========================================================================== -->
+	
+	<!-- (채널 콘텐츠) 내 동영상 조건 지정한 거 갯수 가져옴 -->
+	<select id="getMyContentsTotalCount" parameterType="map" resultType="int">
+	SELECT COUNT(*)
+	  FROM (SELECT V.*, NVL(C.COUNT, 0) COMMENTS, NVL(L.SUM, 0) LIKES
+	          FROM VIDEO V
+	          LEFT OUTER JOIN (SELECT COUNT(*) COUNT, VIDEOIDX
+	                             FROM COMMENTS
+	                            GROUP BY VIDEOIDX) C
+	                       ON V.VIDEOIDX = C.VIDEOIDX
+	          LEFT OUTER JOIN (SELECT SUM(LIKES) SUM, VIDEOIDX
+	                             FROM LIKES
+								GROUP BY VIDEOIDX) L
+						   ON V.VIDEOIDX = L.VIDEOIDX
+			 WHERE V.MEMBERID = #{memberId}
+			 
+			 <if test="search_select == 'VTITLE'">
+		  	   AND VTITLE LIKE '%' || #{search_value} || '%'
+		 	 </if>
+		 
+		 	 <if test="search_select == 'VREGDATE'">
+			 	<choose>
+			 		<when test="search_filter == 'ge'">
+					   AND VREGDATE <![CDATA[>=]]> TO_DATE(#{search_value})
+				 	</when>
+				 	<otherwise>
+					   AND VREGDATE <![CDATA[<]]> TO_DATE(#{search_value})
+				 	</otherwise>
+				</choose>
+			</if>
+		 
+		    <if test="search_select == 'VIEWS'">
+		 	   <choose>
+		 			<when test="search_filter == 'ge'">
+			    	AND VIEWS <![CDATA[>=]]> TO_NUMBER(#{search_value})
+			    </when>
+			 	<otherwise>
+				    AND VIEWS <![CDATA[<]]> TO_NUMBER(#{search_value})
+			 	</otherwise>
+			 </choose>
+		 </if>
+		 
+		 <if test="search_select == 'COMMENTS'">
+		 	<choose>
+		 		<when test="search_filter == 'ge'">
+				 	AND C.COUNT <![CDATA[>=]]> TO_NUMBER(#{search_value})
+			    </when>
+			 	<otherwise>
+			 	AND C.COUNT <![CDATA[<]]> TO_NUMBER(#{search_value})
+			 	</otherwise>
+			 </choose>
+		 </if>
+		 
+		 <if test="search_select == 'LIKES'">
+		 	<choose>
+		 		<when test="search_filter == 'ge'">
+				  	AND L.SUM <![CDATA[>=]]> TO_NUMBER(#{search_value})
+			    </when>
+			 	<otherwise>
+					AND L.SUM <![CDATA[<]]> TO_NUMBER(#{search_value})
+			 	</otherwise>
+			 </choose>
+			 </if>
+		   )
+	</select>
+
+	<!-- ========================================================================== -->
+	<!-- (채널 콘텐츠) 내 동영상 조건 지정한 거 목록 가져옴 -->
+	<select id="getMyContentsVideoList" parameterType="map" resultType="video">
+		SELECT *
+		  FROM (SELECT ROWNUM AS RNUM, V.*
+						  FROM (SELECT V.*, NVL(C.COUNT, 0) COMMENTS, NVL(L.SUM, 0) LIKES
+						          FROM VIDEO V
+						          LEFT OUTER JOIN (SELECT COUNT(*) COUNT, VIDEOIDX
+						                             FROM COMMENTS
+						                            GROUP BY VIDEOIDX) C
+						                       ON V.VIDEOIDX = C.VIDEOIDX
+						          LEFT OUTER JOIN (SELECT SUM(LIKES) SUM, VIDEOIDX
+						                             FROM LIKES
+													GROUP BY VIDEOIDX) L
+											   ON V.VIDEOIDX = L.VIDEOIDX
+								 WHERE V.MEMBERID = #{memberId}
+								 
+								 
+								 <if test="search_select == 'VTITLE'">
+		  		   					AND VTITLE LIKE '%' || #{search_value} || '%'
+		 		 				 </if>
+								 <if test="search_select == 'VREGDATE'">
+								 	<choose>
+								 		<when test="search_filter == 'ge'">
+										   AND VREGDATE <![CDATA[>=]]> TO_DATE(#{search_value})
+									 	</when>
+									 	<otherwise>
+										   AND VREGDATE <![CDATA[<]]> TO_DATE(#{search_value})
+									 	</otherwise>
+									 </choose>
+								 </if>
+								 <if test="search_select == 'VIEWS'">
+								 	<choose>
+								 		<when test="search_filter == 'ge'">
+									    	AND VIEWS <![CDATA[>=]]> TO_NUMBER(#{search_value})
+									    </when>
+									 	<otherwise>
+										    AND VIEWS <![CDATA[<]]> TO_NUMBER(#{search_value})
+									 	</otherwise>
+									 </choose>
+								 </if>
+								 <if test="search_select == 'COMMENTS'">
+								 	<choose>
+								 		<when test="search_filter == 'ge'">
+										 	AND C.COUNT <![CDATA[>=]]> TO_NUMBER(#{search_value})
+									    </when>
+									 	<otherwise>
+									 		AND C.COUNT <![CDATA[<]]> TO_NUMBER(#{search_value})
+									 	</otherwise>
+									 </choose>
+								 </if>
+								 <if test="search_select == 'LIKES'">
+								 	<choose>
+								 		<when test="search_filter == 'ge'">
+										  	AND L.SUM <![CDATA[>=]]> TO_NUMBER(#{search_value})
+									    </when>
+									 	<otherwise>
+											AND L.SUM <![CDATA[<]]> TO_NUMBER(#{search_value})
+									 	</otherwise>
+									 </choose>  
+						         </if>     
+						 	     ORDER BY VREGDATE DESC
+                				) V
+                )
+        WHERE RNUM BETWEEN #{begin} AND #{end}
+	</select>
+	
+	<delete id="deleteMyVideo" parameterType="string" >
+		DELETE FROM VIDEO WHERE VIDEOIDX = #{videoIdx}
+	</delete>
+	
+	<select id="getAllViews" parameterType="string" resultType="int">
+		SELECT NVL(SUM(VIEWS), 0) FROM VIDEO WHERE MEMBERID = #{memberId} 
+	</select>
+	
+	<!-- ============================================================ -->
+	<!-- 비디오 -->
+	<select id="getVideoList" parameterType="video" resultType="video">
+		SELECT *
+		FROM VIDEO
+		ORDER BY VREGDATE DESC
+	</select>
+	
+	<update id="viewUp" parameterType="int">
+		UPDATE VIDEO
+		SET VIEWS = VIEWS + 1
+		WHERE VIDEOIDX = #{videoIdx}
+	</update>
+	
+	<select id="getVideo" parameterType="video" resultType="video">
+		SELECT M.MEMBERID, V.VIDEOIDX, V.VTITLE, V.GENRE, V.VIMAGE,
+		V.VIDEO, V.DESCRIPTION, V.VREGDATE, V.VIEWS, M.TITLE, M.IMAGE
+		FROM VIDEO V
+		JOIN 
+			MEMBERS M ON V.MEMBERID = M.MEMBERID
+		WHERE VIDEOIDX = #{videoIdx}
+	</select>
+	
+	<select id="rightVideoList" parameterType="video" resultType="video">
+		SELECT *
+		FROM VIDEO
+		ORDER BY VREGDATE DESC
+	</select>
+	
+	<insert id="insertVideo" parameterType="video">
+        INSERT INTO VIDEO (MEMBERID, VIDEOIDX, VTITLE, GENRE, VIMAGE, VIDEO, DESCRIPTION, VREGDATE, VIEWS)
+        VALUES (#{memberId}, (SELECT NVL(MAX(VIDEOIDX), 0) + 1 FROM VIDEO), #{vtitle}, #{genre}, #{vimage}, #{video}, #{description}, SYSDATE, 0)
+    </insert>
+	
+	<!-- 회원 아이디까지 같이 색제하려면 로그인 기능 구현 후  
+		WHERE 우측에 MEMBERID = #{memberId} AND 붙이기 -->
+	<delete id="deleteVideo" parameterType="video">
+		DELETE FROM VIDEO WHERE VIDEOIDX = #{videoIdx}
+	</delete>
+	
+	<select id="fixVideo" parameterType="video" resultType="video">
+		SELECT *
+		FROM VIDEO
+    	WHERE MEMBERID = #{memberId} AND VIDEOIDX = #{videoIdx}
+	</select>
+	
+	<update id="updateVideo" parameterType="video">
+	    UPDATE VIDEO
+	    SET VTITLE = #{vtitle},
+	    VIMAGE = #{vimage},
+	    VIDEO = #{video},
+	    DESCRIPTION = #{description},
+	    VREGDATE = CURRENT_TIMESTAMP
+	    WHERE MEMBERID = #{memberId} AND VIDEOIDX = #{videoIdx}
+	</update>
+	
+	<!-- 회원 -->
+	<select id="videoSearchMain" parameterType="string" resultType="vmvo">
+      SELECT V.*, M.IMAGE, M.TITLE FROM VIDEO V, MEMBERS M 
+      WHERE UPPER(V.MEMBERID) LIKE UPPER(M.MEMBERID) AND VTITLE LIKE '%' || #{vtitle} || '%'
+	</select>
+	
+	
+ <!-- 내가 좋아요 표시한 영상 -->
+   <select id="myLikesSelect" parameterType="string" resultType="vmvo">
+   SELECT V.*, M.IMAGE, M.TITLE FROM LIKES L, VIDEO V, MEMBERS M
+   WHERE L.VIDEOIDX = V.VIDEOIDX 
+     AND L.MEMBERID = M.MEMBERID 
+     AND UPPER(L.MEMBERID) LIKE UPPER(#{memberId})
+     AND L.LIKES = 1
+   </select>
+
+
+</mapper>

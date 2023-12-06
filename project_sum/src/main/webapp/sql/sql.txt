@@ -1,0 +1,404 @@
+INSERT INTO VIDEO (MEMBERID, VIDEOIDX, VTITLE, GENRE, VIMAGE, VIDEO, DESCRIPTION)
+VALUES ('test', 2, '테스트2', '테스트장르2', 'qq.png', 'ee', '영상입니다')
+;
+
+INSERT INTO VIDEO (MEMBERID, VIDEOIDX, VTITLE, GENRE, VIMAGE, VIDEO, DESCRIPTION)
+VALUES ('test', 3, '테스트3', '테스트장르3', 'qq.png', 'ee', '영상입니다')
+;
+INSERT INTO VIDEO (MEMBERID, VIDEOIDX, VTITLE, GENRE, VIMAGE, VIDEO, DESCRIPTION)
+VALUES ('test', 4, '테스트4', '테스트장르4', 'qq.png', 'ee', '영상입니다')
+;
+INSERT INTO VIDEO (MEMBERID, VIDEOIDX, VTITLE, GENRE, VIMAGE, VIDEO, DESCRIPTION)
+VALUES ('test', 5, '테스트5', '테스트장르5', 'qq.png', 'ee', '영상입니다')
+;
+INSERT INTO VIDEO (MEMBERID, VIDEOIDX, VTITLE, GENRE, VIMAGE, VIDEO, DESCRIPTION)
+VALUES ('test', 6, '테스트6', '테스트장르5', 'qq.png', 'ee', '영상입니다')
+;
+INSERT INTO VIDEO (MEMBERID, VIDEOIDX, VTITLE, GENRE, VIMAGE, VIDEO, DESCRIPTION)
+VALUES ('test', 7, '테스트7', '테스트장르5', 'qq.png', 'ee', '영상입니다')
+;
+INSERT INTO VIDEO (MEMBERID, VIDEOIDX, VTITLE, GENRE, VIMAGE, VIDEO, DESCRIPTION)
+VALUES ('hong', 12, '삭제1', 'qqq', 'qq.png', 'ee', '영상입니다')
+;
+INSERT INTO VIDEO (MEMBERID, VIDEOIDX, VTITLE, GENRE, VIMAGE, VIDEO, DESCRIPTION)
+VALUES ('test', 13, '삭제1', 'qwewq', 'qq.png', 'ee', '영상입니다')
+;
+INSERT INTO VIDEO (MEMBERID, VIDEOIDX, VTITLE, GENRE, VIMAGE, VIDEO, DESCRIPTION)
+VALUES ('test', 14, '삭제2', 'sss', 'qq.png', 'ee', '영상입니다')
+;
+INSERT INTO VIDEO (MEMBERID, VIDEOIDX, VTITLE, GENRE, VIMAGE, VIDEO, DESCRIPTION)
+VALUES ('test', 15, '삭제3', 'aaaaa', 'qq.png', 'ee', '영상입니다')
+;
+INSERT INTO VIDEO (MEMBERID, VIDEOIDX, VTITLE, GENRE, VIMAGE, VIDEO, DESCRIPTION)
+VALUES ('test', 16, '삭제4', 'aaaaa', 'qq.png', 'ee', '영상입니다')
+;
+INSERT INTO VIDEO (MEMBERID, VIDEOIDX, VTITLE, GENRE, VIMAGE, VIDEO, DESCRIPTION)
+VALUES ('test', 17, '삭제5', 'aaaaa', 'qq.png', 'ee', '영상입니다')
+;
+INSERT INTO VIDEO (MEMBERID, VIDEOIDX, VTITLE, GENRE, VIMAGE, VIDEO, DESCRIPTION)
+VALUES ('test', 18, '삭제6111111111111111111111111111111111111111111111', 'aaaaa', 'qq.png', 'ee', '영상입니다')
+;
+
+SELECT * FROM VIDEO WHERE MEMBERID = 'test';
+
+INSERT INTO MEMBERS (MEMBERID,NAME,TITLE,PWD,IMAGE,EMAIL,STATUS)
+VALUES('hong','홍홍','홍채널','123','프로필.png','e@.com',1);
+
+INSERT INTO MEMBERS (MEMBERID,NAME,TITLE,PWD,IMAGE,EMAIL,STATUS)
+VALUES('kim','김씨','김채널','123','프로필.png','kim@.com',1);
+INSERT INTO MEMBERS (MEMBERID,NAME,TITLE,PWD,IMAGE,EMAIL,STATUS)
+VALUES('LEE','이씨','채널이','22','프로필.png','E2@.com',1);
+
+INSERT INTO COMMENTS (COMMENTS, MEMBERID, VIDEOIDX)
+VALUES ('재미있습니다. 재밌어요.', 'hong', 1)
+;
+INSERT INTO COMMENTS (COMMENTS, MEMBERID, VIDEOIDX)
+VALUES ('qqq.', 'hong', 2)
+;
+INSERT INTO COMMENTS (COMMENTS, MEMBERID, VIDEOIDX)
+VALUES ('또 남김', 'LEE', 10)
+;
+DELETE FROM VIDEO WHERE VIDEOIDX = 18;
+
+
+INSERT INTO LIKES (VIDEOIDX, MEMBERID, LIKES)
+VALUES (2, 'test', 6);
+
+SELECT COUNT(*) FROM VIDEO WHERE MEMBERID = 'et';
+SELECT * FROM VIDEO WHERE MEMBERID = 'test' ORDER BY VIDEOIDX DESC;
+
+SELECT *
+FROM (SELECT ROWNUM AS RNUM, V.*
+        FROM (SELECT V.*, (SELECT COUNT(*) 
+                           FROM COMMENTS C
+                          WHERE C.VIDEOIDX = V.VIDEOIDX 
+                            ) COMMENTS,
+                            (SELECT COUNT(*)
+                               FROM LIKES L
+                              WHERE L.VIDEOIDX = V.VIDEOIDX
+                                ) LIKES
+                      FROM VIDEO V
+                     WHERE MEMBERID = 'test'
+                       AND VTITLE LIKE '%' || '' || '%'
+                     ORDER BY VREGDATE DESC) V
+      )
+WHERE RNUM BETWEEN 1 AND 9
+;
+
+SELECT COUNT (*)
+FROM VIDEO
+WHERE MEMBERID = 'test'
+  --AND VTITLE LIKE '%' || '8' || '%'
+  AND VREGDATE <= '2023-11-17' 
+;
+
+SELECT *
+		  FROM (SELECT V.*, (SELECT COUNT(*) 
+                                       FROM COMMENTS C
+                                      WHERE C.VIDEOIDX = V.VIDEOIDX) COMMENTS,
+                                    (SELECT COUNT(*)
+                                       FROM LIKES L
+                                      WHERE L.VIDEOIDX = V.VIDEOIDX) LIKES
+                 FROM VIDEO V
+	            WHERE MEMBERID = 'test')
+		 WHERE MEMBERID = 'test'
+		 
+		   AND VIEWS <= 300
+;
+
+SELECT TO_DATE('2023-11-15') + 1 FROM DUAL;
+
+
+SELECT * FROM COMMENTS;
+
+SELECT V.*, (SELECT COUNT(*) 
+             FROM COMMENTS C
+             WHERE C.VIDEOIDX = V.VIDEOIDX) COMMENTS,
+            (SELECT COUNT(*)
+              FROM LIKES L
+             WHERE L.VIDEOIDX = V.VIDEOIDX) LIKES
+FROM VIDEO V
+WHERE MEMBERID = 'test'
+AND VIEWS <= '1000'
+ORDER BY VREGDATE DESC;
+
+SELECT *
+		  FROM (SELECT ROWNUM AS RNUM, V.*
+                  FROM (SELECT V.*, (SELECT COUNT(*) 
+                                       FROM COMMENTS C
+                                      WHERE C.VIDEOIDX = V.VIDEOIDX) COMMENT,
+                                    (SELECT COUNT(*)
+                                       FROM LIKES L
+                                      WHERE L.VIDEOIDX = V.VIDEOIDX) LIKE
+                          FROM VIDEO V
+	                     WHERE MEMBERID = 'test'
+                           
+                         ORDER BY VREGDATE DESC) V
+                )
+
+        WHERE RNUM BETWEEN 1 AND 8
+                        and COMMENT >= 1
+;
+SELECT COUNT (*)
+  FROM(SELECT V.*, (SELECT COUNT(*)
+                   FROM COMMENTS C, VIDEO V
+                  WHERE C.VIDEOIDX = V.VIDEOIDX) COMMENTS,
+                 (SELECT COUNT(*)
+                  FROM LIKES L, VIDEO V
+                  WHERE L.VIDEOIDX = V.VIDEOIDX) LIKES
+       FROM VIDEO V
+	  WHERE MEMBERID = 'test'
+      )
+WHERE COMMENTS >= 1
+;
+
+-- 이거
+SELECT *
+		  FROM (SELECT ROWNUM AS RNUM, VI.*
+                  FROM (SELECT V.*, (SELECT COUNT(*) COUNT
+                                       FROM COMMENTS C
+                                      WHERE C.VIDEOIDX = V.VIDEOIDX) COMMENTS,
+                                    (SELECT COUNT(*) COUNT
+                                       FROM LIKES L
+                                      WHERE L.VIDEOIDX = V.VIDEOIDX) LIKES
+                          FROM VIDEO V
+	                     WHERE V.MEMBERID = 'test'
+                         AND VREGDATE >= (TO_DATE('2023-11-15') + 1)
+                         AND C.COUNT >= 1
+                         ORDER BY VREGDATE DESC) VI
+                )
+        WHERE RNUM BETWEEN 1 AND 8
+;
+        
+        
+SELECT V.*, (SELECT COUNT(*) 
+               FROM COMMENTS C
+              WHERE C.VIDEOIDX = V.VIDEOIDX) COMMENTS
+  FROM VIDEO V
+;
+        
+        
+        
+     SELECT COUNT(*)   
+FROM (SELECT ROWNUM AS RNUM, VI.*
+                  FROM (SELECT V.*, (SELECT COUNT(*) COUNT, VIDEOIDX
+                                       FROM COMMENTS C
+                                      WHERE C.VIDEOIDX = V.VIDEOIDX) COMMENTS,
+                                    (SELECT COUNT(*) COUNT, VIDEOIDX
+                                       FROM LIKES L
+                                      WHERE L.VIDEOIDX = V.VIDEOIDX) LIKES
+                          FROM VIDEO V
+	                     WHERE V.MEMBERID = 'test'
+                           AND C.COUNT >= 0
+                         ORDER BY VREGDATE DESC
+                         ) VI
+ );               
+ 
+ 
+  SELECT *      
+ FROM( SELECT *
+    FROM (SELECT V.*, NVL(C.COUNT, 0) COMMENTS, NVL(L.COUNT, 0) LIKES
+      FROM VIDEO V
+      LEFT OUTER JOIN (SELECT COUNT(*) COUNT, VIDEOIDX
+                         FROM COMMENTS
+                        GROUP BY VIDEOIDX) C
+        ON V.VIDEOIDX = C.VIDEOIDX                    
+      LEFT OUTER JOIN (SELECT COUNT(*) COUNT, VIDEOIDX
+                         FROM LIKES
+                        GROUP BY VIDEOIDX) L
+        ON V.VIDEOIDX = L.VIDEOIDX
+       WHERE V.MEMBERID = 'test' 
+          
+       ORDER BY VREGDATE DESC
+   )     ) ;
+    
+    
+SELECT *
+  FROM (SELECT ROWNUM AS RNUM, V.*
+			      FROM (SELECT V.*, NVL(C.COUNT, 0) COMMENTS, NVL(L.COUNT, 0) LIKES
+					      FROM VIDEO V
+					      LEFT OUTER JOIN (SELECT COUNT(*) COUNT, VIDEOIDX
+						                     FROM COMMENTS
+						                    GROUP BY VIDEOIDX) C
+						               ON V.VIDEOIDX = C.VIDEOIDX
+						  LEFT OUTER JOIN (SELECT COUNT(*) COUNT, VIDEOIDX
+						                     FROM LIKES
+						  				    GROUP BY VIDEOIDX) L
+									   ON V.VIDEOIDX = L.VIDEOIDX
+						 WHERE V.MEMBERID = 'test'
+						 ORDER BY VREGDATE DESC
+                        ) V
+                		 
+       )
+ WHERE RNUM BETWEEN 1 AND 9
+; 
+
+
+SELECT *
+FROM (SELECT V.*, NVL(C.COUNT, 0) COMMENTS, NVL(L.COUNT, 0) LIKES
+					      FROM VIDEO V
+					      LEFT OUTER JOIN (SELECT COUNT(*) COUNT, VIDEOIDX
+						                     FROM COMMENTS
+						                    GROUP BY VIDEOIDX) C
+						               ON V.VIDEOIDX = C.VIDEOIDX
+						  LEFT OUTER JOIN (SELECT COUNT(*) COUNT, VIDEOIDX
+						                     FROM LIKES
+						  				    GROUP BY VIDEOIDX) L
+									   ON V.VIDEOIDX = L.VIDEOIDX
+						 
+                         
+						 ORDER BY VREGDATE DESC
+);
+
+SELECT *
+FROM COMMENTS
+;
+SELECT COUNT(*) COUNT, VIDEOIDX
+	                             FROM COMMENTS
+	                            GROUP BY VIDEOIDX
+                                ;
+                                
+                                
+                                
+SELECT *
+FROM (SELECT V.*, NVL(C.COUNT, 0) COMMENTS, NVL(L.COUNT, 0) LIKES
+					      FROM VIDEO V
+					      LEFT OUTER JOIN (SELECT COUNT(*) COUNT, VIDEOIDX
+						                     FROM COMMENTS
+						                    GROUP BY VIDEOIDX) C
+						               ON V.VIDEOIDX = C.VIDEOIDX
+						  LEFT OUTER JOIN (SELECT COUNT(*) COUNT, VIDEOIDX
+						                     FROM LIKES
+						  				    GROUP BY VIDEOIDX) L
+									   ON V.VIDEOIDX = L.VIDEOIDX
+						 
+                         WHERE MEMBERID = 'test'
+						 ORDER BY VREGDATE DESC
+);
+
+SELECT C.*
+FROM COMMENTS C
+ JOIN (SELECT VIDEOIDX 
+        FROM VIDEO 
+       WHERE MEMBERID = 'test'
+       GROUP BY VIDEOIDX) V
+ ON V.VIDEOIDX = C.VIDEOIDX
+ ORDER BY CREGDATE DESC
+;
+
+-- 갯수
+SELECT COUNT(*)
+FROM (SELECT C.VIDEOIDX, (SELECT VTITLE FROM VIDEO WHERE VIDEOIDX = C.VIDEOIDX) VTITLE, C.MEMBERID, C.CREGDATE, C.COMMENTS, M.IMAGE
+        FROM COMMENTS C, VIDEO V, MEMBERS M
+       WHERE C.VIDEOIDX = V.VIDEOIDX
+         AND V.MEMBERID = 'test'
+       ORDER BY C.VIDEOIDX DESC, C.CREGDATE DESC
+     )
+;
+
+-- 리스트 가져옴
+SELECT *
+  FROM (SELECT ROWNUM AS RNUM, C.*
+          FROM (SELECT C.VIDEOIDX, (SELECT VTITLE 
+                                      FROM VIDEO 
+                                     WHERE VIDEOIDX = C.VIDEOIDX) VTITLE
+                     , C.MEMBERID, C.CREGDATE, C.COMMENTS, M.IMAGE, V.VIMAGE
+                  FROM COMMENTS C, VIDEO V, MEMBERS M
+                 WHERE C.VIDEOIDX = V.VIDEOIDX
+                   AND V.MEMBERID = 'test'
+                   AND C.MEMBERID = 'hong'     
+                   --AND VTITLE LIKE '%%'     
+                   --AND C.CREGDATE >= TO_DATE('2023-11-17')
+                   --AND C.COMMENTS LIKE '%%'
+                   
+                 ORDER BY C.CREGDATE DESC
+               ) C
+          
+        )
+ WHERE RNUM BETWEEN 1 AND 20
+;
+
+select * from video;
+
+SELECT COUNT(*)
+		  FROM (SELECT C.VIDEOIDX, (SELECT VTITLE 
+		                              FROM VIDEO 
+		                             WHERE VIDEOIDX = C.VIDEOIDX) VTITLE
+		                         , C.MEMBERID, C.CREGDATE, C.COMMENTS
+		          FROM COMMENTS C, VIDEO V
+		         WHERE C.VIDEOIDX = V.VIDEOIDX
+		           AND V.MEMBERID = 'test'
+                   AND C.COMMENTS LIKE '%' || '안' || '%'
+		);
+
+
+SELECT * FROM SUB;
+
+INSERT INTO SUB (MEMBERID, SUBSCRIBEID)
+VALUES ('test', 'hong')
+;
+INSERT INTO SUB (MEMBERID, SUBSCRIBEID)
+VALUES ('test', 'kim')
+;
+
+INSERT INTO SUB (MEMBERID, SUBSCRIBEID)
+VALUES ('test', 'LEE')
+;
+
+-- 이거
+SELECT COUNT(*)
+  FROM COMMENTS C, (SELECT MEMBERID, VIDEOIDX FROM VIDEO WHERE MEMBERID = 'test') V
+ 
+ WHERE C.VIDEOIDX = V.VIDEOIDX
+   AND CREGDATE BETWEEN TO_DATE('2023-11-16', 'YYYY-MM-DD') + 1 AND TO_DATE('2023-11-20', 'YYYY-MM-DD') + 1
+;
+-- 이거
+SELECT C.*
+  FROM COMMENTS C, (SELECT VIDEOIDX FROM VIDEO WHERE MEMBERID = 'test') V
+ 
+ WHERE C.VIDEOIDX = V.VIDEOIDX
+   ORDER BY CREGDATE DESC
+   
+   
+   AND TO_CHAR(CREGDATE, 'YYYY-MM-DD') LIKE '%' || '2023-11-20' || '%'
+;
+
+SELECT * FROM COMMENTS WHERE VIDEOIDX >= 1 AND VIDEOIDX <= 8;
+
+SELECT * FROM MEMBERS WHERE MEMBERID = 'hong';
+
+SELECT * FROM VIDEO WHERE MEMBERID = 'test';
+
+SELECT * FROM COMMENTS ORDER BY VIDEOIDX DESC ,CREGDATE ASC;
+ 
+UPDATE MEMBERS SET LOGDATE = SYSDATE WHERE MEMBERID = 'hong';
+
+SELECT TO_DATE('2023-11-22', 'YYYY-MM-DD') + 1 FROM DUAL;
+
+
+SELECT *
+		  FROM (SELECT ROWNUM AS RNUM, C.*
+		          FROM (SELECT C.VIDEOIDX, (SELECT VTITLE 
+		                                      FROM VIDEO 
+		                                     WHERE VIDEOIDX = C.VIDEOIDX) VTITLE
+		                     , C.MEMBERID, C.CREGDATE, C.COMMENTS, M.IMAGE, V.VIMAGE
+		                  FROM COMMENTS C, VIDEO V, MEMBERS M
+		                 WHERE C.VIDEOIDX = V.VIDEOIDX
+		                   AND V.MEMBERID = 'test'
+                           AND C.MEMBERID = M.MEMBERID
+		          
+		                 ORDER BY C.CREGDATE DESC
+		               ) C
+		        )
+		 WHERE RNUM BETWEEN 1 AND 20
+;
+
+SELECT * FROM COMMENTS ORDER BY VIDEOIDX DESC;
+
+SELECT * FROM SUB;
+
+SELECT COUNT(*) 
+		  FROM SUB  
+		 WHERE MEMBERID = 'test'
+		   AND TO_CHAR(SREGDATE, 'YYYY-MM-DD') LIKE '%' || '2023-11-22' || '%'
+;

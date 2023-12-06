@@ -1,0 +1,79 @@
+body {margin:0;}
+.login{
+    width:300px;
+    margin: auto;
+    text-align: center;
+}
+#fontsize{
+display: inline-block;
+padding: 0 3px;
+font-size: 13px;
+font-family: "맑은 고딕","Malgun Gothic","Apple Gothic",sans-serif;
+color: #767676;
+}
+.id_line , .pwd_line{
+	display: table;
+    table-layout: fixed;
+    width: 100%;
+    padding: 14px 17px 13px;
+    box-sizing: border-box;
+}
+#moveHome {
+      margin-left: 30px;
+      margin-top: 20px;
+      position: fixed;
+      width : 50px;
+      height : 50px;
+      cursor: pointer;
+   }
+.btn_login {
+    display: block;
+    width: 100%;
+    padding: 13px 0 13px;
+    border-radius: 6px;
+    border: solid 1px rgba(0,0,0,.15);
+    background-color: rgba(0, 0, 0, 0.47);
+    box-sizing: border-box;
+}
+
+.find_text {
+    display: inline-block;
+    font-size: 14px;
+    line-height: 17px;
+    text-decoration: none;
+    color: #888;
+}
+#centerform{
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	position: absolute;
+}
+.one h1 {
+  text-align: center;
+  text-transform: uppercase;
+  padding-bottom: 5px;
+}
+.one h1:after {
+  width: 100px;
+  height: 1px;
+  display: block;
+  content: "";
+  position: relative;
+  margin-top: 25px;
+  left: 50%;
+  margin-left: -50px;
+  background-color: #b80000;
+}
+
+
+#centerform{
+	display : inline-block;
+	background-color: white;
+	padding: 10px;
+	box-shadow: 8px 16px 16px hsl(0deg 0% 0% / 0.25);
+	width: 500px;
+	height: 300px;
+	margin: auto;
+	background-color: #ceced1;
+}

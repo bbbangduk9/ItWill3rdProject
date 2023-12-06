@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="membersDAO">
+
+	<select id="getMem" parameterType="string" resultType="member">
+		SELECT * FROM MEMBERS WHERE MEMBERID = #{memberId}
+	</select>
+
+	<select id="getMembers" parameterType="member" resultType="member">
+		SELECT * FROM MEMBERS WHERE MEMBERID = #{memberId}
+	</select>
+	
+	<update id="updateLogdate" parameterType="member">
+		UPDATE MEMBERS SET LOGDATE = SYSDATE WHERE MEMBERID = #{memberId}
+	</update>
+
+	<select id="getUser" parameterType="member" resultType="member">
+		SELECT * FROM MEMBERS
+		WHERE UPPER(MEMBERID) LIKE UPPER(#{memberId}) AND PWD = #{pwd}
+	</select>
+	
+	<!-- 이메일을 통한 아이디 찾기 -->
+	<select id="getID" parameterType="string" resultType="string">
+		SELECT MEMBERID FROM MEMBERS
+		WHERE UPPER(EMAIL) LIKE UPPER(#{email})
+	</select>
+	
+	
+	<!-- 이메일과 아이디를 통한 비밀번호 찾기 -->
+	
+	<select id="getPwd" parameterType="member" resultType="member">
+		SELECT MEMBERID,EMAIL FROM MEMBERS
+		WHERE
+		UPPER(MEMBERID) LIKE UPPER(#{memberId}) AND UPPER(EMAIL) LIKE UPPER(#{email})
+	</select>
+	
+	<!-- 이메일과 아이디를 통한 비밀번호 변경 -->
+	
+	<update id="changePwd" parameterType="member">
+		UPDATE MEMBERS SET PWD = #{pwd}
+		WHERE UPPER(MEMBERID) LIKE UPPER(#{memberId}) AND UPPER(EMAIL) LIKE UPPER(#{email})
+	</update>
+	
+	<!-- 이메일, 아이디 중복값 체크 -->
+	<select id = "checkGetUser" parameterType="member" resultType="member">
+		SELECT MEMBERID,EMAIL FROM MEMBERS
+		WHERE
+		UPPER(MEMBERID) LIKE UPPER(#{memberId}) OR UPPER(EMAIL) LIKE UPPER(#{email})
+	</select>
+	
+	<!-- 회원 로그 업데이트 -->
+	<update id="updateLog" parameterType="member">
+		UPDATE MEMBERS SET LOGDATE = SYSDATE
+		WHERE MEMBERID = #{memberId}
+	</update>
+	
+	<!-- 회원정보 업데이트 -->
+	<update id="updateMembers" parameterType="member">
+		UPDATE MEMBERS
+		SET TITLE = #{title}, PWD = #{pwd}, IMAGE = #{image}
+		WHERE MEMBERID = #{memberId}
+	</update>
+
+	<!-- 아이디,비밀번호 찾기 -->
+	<insert id="signUp" parameterType="member">
+		INSERT INTO MEMBERS(MEMBERID,NAME,TITLE,PWD,IMAGE,EMAIL)
+		VALUES(#{memberId},#{name},#{title},#{pwd},#{image},#{email})
+	</insert>
+	
+	<!-- 승민이형 매핑파일 -->
+	
+		<!-- 1년 이상 미접속 고객 데이터 삭제 -->
+	<delete id="membersTimeDelete">
+		DELETE FROM MEMBERS WHERE LOGDATE &lt;= #{logDate} 
+	</delete>
+	 
+	<!-- 회원가입 -->
+	<insert id="memberRegist" parameterType="member">
+		INSERT INTO MEMBERS (MEMBERID, NAME, TITLE, REGDATE, PWD, IMAGE, EMAIL, STATUS, LOGDATE, BIRTH)
+		VALUES (#{memberId}, #{name}, #{title}, SYSDATE, #{pwd}, #{image}, #{email},1 ,SYSDATE, #{birth})
+	</insert>
+	
+	<!-- 회원 ID 중복값 체크 -->
+	<select id="selectMemberOne" parameterType="string" resultType="int">
+		SELECT COUNT(*) FROM MEMBERS WHERE UPPER(MEMBERID) LIKE UPPER(#{memberId})
+	</select>
+	
+	<!-- 회원 email 중복값 체크 -->
+	<select id="selectEmailOne" parameterType="string" resultType="int">
+		SELECT COUNT(*) FROM MEMBERS WHERE UPPER(EMAIL) LIKE UPPER(#{email})
+	</select>
+	
+	<!-- 회원정보 리스트 -관리자용 -->
+	<select id="selectMasterList" resultType="member" parameterType="string">
+		SELECT * FROM MEMBERS WHERE UPPER(MEMBERID) LIKE UPPER('%' || #{memberId} || '%') ORDER BY MEMBERID DESC
+	</select>
+	
+	<!-- 회원정보 상태값 수정 -관리자용 -->
+	<update id="statusUpdate" parameterType="member">
+		UPDATE MEMBERS
+		   SET STATUS = #{status}
+		 WHERE UPPER(MEMBERID) LIKE UPPER(#{memberId})
+	</update>
+	
+	<!-- video/title 검색 -->
+	<select id="titleSearch" parameterType="string" resultType="member">
+		SELECT * FROM MEMBERS WHERE UPPER(TITLE) LIKE UPPER('%' || #{title} || '%')
+	</select>
+	
+	<!-- memberId 사용하여 vo 검색_구독리스트 작성시 사용 -->
+	<select id="memberSelectOne" parameterType="string" resultType="member">
+		SELECT * FROM MEMBERS WHERE UPPER(MEMBERID) LIKE UPPER(#{memberId})
+	</select>
+	
+	<!-- 구독자 선택 -->
+	<select id="subscribeSelect" parameterType="string" resultType="subscribe">
+		SELECT * FROM SUB WHERE UPPER(MEMBERID) LIKE UPPER(#{memberId})
+	</select>
+	<!-- 구독자 등록 -->
+	<insert id="subscribeIn" parameterType="subscribe">
+		INSERT INTO SUB (MEMBERID, SUBSCRIBEID, SREGDATE)
+		VALUES (#{memberId}, #{subscribeId}, SYSDATE)
+	</insert>
+	<!-- 구독자 삭제 -->
+	<delete id="subscribeDel" parameterType="subscribe">
+		DELETE FROM SUB WHERE MEMBERID = #{memberId} AND SUBSCRIBEID = #{subscribeId}
+	</delete>
+	
+</mapper>

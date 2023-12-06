@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+  
+  <settings>
+		<setting name="jdbcTypeForNull" value="NULL"/>
+  </settings>
+  
+  <typeAliases>
+  	<typeAlias type="com.spring.ft.members.MembersVO" alias="member"/>
+  	<typeAlias type="com.spring.ft.members.SubscribeVO" alias="subscribe"/>
+  	<typeAlias type="com.spring.ft.video.VideoMembersVO" alias="vmvo"/>
+  	<typeAlias type="com.spring.ft.video.VideoVO" alias="video"/>
+  	<typeAlias type="com.spring.ft.comments.CommentsVO" alias="comments"/>
+  	<typeAlias type="com.spring.ft.sub.SubVO" alias="sub"/>
+  	<typeAlias type="com.spring.ft.likes.LikesVO" alias="likes"/>
+  	<typeAlias type="com.spring.ft.qna.QnaVO" alias="qna"/>
+  </typeAliases>
+  
+</configuration>

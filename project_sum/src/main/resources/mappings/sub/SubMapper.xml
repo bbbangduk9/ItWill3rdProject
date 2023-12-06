@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="subDAO"> 
+
+	<select id="getAllSubCount" parameterType="string" resultType="int">
+		SELECT COUNT(*) FROM SUB WHERE SUBSCRIBEID = #{memberId}
+	</select>
+	
+	<select id="getMySubCount" parameterType="map" resultType="int">
+		SELECT COUNT(*) 
+		  FROM SUB
+		 WHERE SUBSCRIBEID = #{memberId}
+		   AND SREGDATE BETWEEN TO_DATE(#{start_day}, 'YYYY-MM-DD') + 1 AND TO_DATE(#{end_day}, 'YYYY-MM-DD') + 1
+	</select>
+
+	<select id="getMySubCountOne" parameterType="map" resultType="int">
+		SELECT COUNT(*) 
+		  FROM SUB
+		 WHERE SUBSCRIBEID = #{memberId}
+		   AND TO_CHAR(SREGDATE, 'YYYY-MM-DD') LIKE '%' || #{start_day} || '%' 
+	</select>
+	
+</mapper>
