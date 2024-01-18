@@ -19,6 +19,16 @@ Spring을 이용한 동영상 사이트 개발
 - **Server** : Apache Tomcat 9.0.80
 <br>
 
+### 개발스택
+
+  <img src="https://img.shields.io/badge/java-007396?style=for-the-badge&logo=java&logoColor=white">
+  <img src="https://img.shields.io/badge/spring-6DB33F?style=for-the-badge&logo=spring&logoColor=white">
+  <img src="https://img.shields.io/badge/springframework-6DB33F?style=for-the-badge&logo=spring&logoColor=white">
+  <img src="https://img.shields.io/badge/jsp-F7DF1E?style=for-the-badge&logo=&logoColor=white">
+  <img src="https://img.shields.io/badge/javascript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=white">
+  <img src="https://img.shields.io/badge/mybatis-000000?style=for-the-badge&logo=&logoColor=white">
+
+
 ## 담당한 주요 기능 
 -자주 묻는 질문 
 
